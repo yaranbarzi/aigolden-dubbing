@@ -72,8 +72,10 @@ python app.py
 - اسپانیایی (ES)
 ## اجرا در Google Colab
 
+**نسخه با رابط کاربری (UI Version)**  
 [![Open In Colab - UI Version](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/yaranbarzi/aigolden-dubbing/blob/main/aigolden_2025Dub_UI.ipynb)
 
+**نسخه بدون رابط کاربری (NO UI Version)**  
 [![Open In Colab - NO UI Version](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/yaranbarzi/aigolden-dubbing/blob/main/aigolden_2025Dub_NOUI.ipynb)
 
 ## آموزش تصویری
