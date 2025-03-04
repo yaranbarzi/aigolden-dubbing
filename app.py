@@ -318,26 +318,14 @@ with gr.Blocks(title="Video Dubbing Tool", theme=gr.themes.Base()) as app:
         upload_btn.click(process_video, inputs=[video_file, youtube_url], outputs=upload_status)
     
     with gr.Tab("2. Extract Text"):
-        gr.Markdown("### Extract text from video audio or upload subtitle")
-        extraction_method = gr.Radio(["Whisper", "Upload Subtitle"], label="Extraction Method", value="Whisper")
-        subtitle_file = gr.File(label="Upload SRT File")
-        extract_btn = gr.Button("Extract Text")
-        extract_status = gr.Textbox(label="Status")
+    gr.Markdown("### Extract text from video audio or upload subtitle")
+    extraction_method = gr.Radio(["Whisper", "Upload Subtitle"], label="Extraction Method", value="Whisper")
+    subtitle_file = gr.File(label="Upload SRT File", file_types=[".srt", ".txt", ".vtt"], file_count="single")
         
         extract_btn.click(extract_text, inputs=[extraction_method, subtitle_file], outputs=extract_status)
     
     with gr.Tab("3. Translate Subtitles"):
-        gr.Markdown("### Translate subtitles using AI or upload translated subtitle")
-        translation_method = gr.Radio(["AI Translation", "Upload Translation"], label="Translation Method", value="AI Translation")
-        
-        with gr.Group(visible=True) as ai_translation_group:
-            api_key = gr.Textbox(label="Google API Key", type="password")
-            source_lang = gr.Dropdown(list(LANGUAGE_MAP.keys()), label="Source Language", value="English (EN)")
-            target_lang = gr.Dropdown(list(LANGUAGE_MAP.keys()), label="Target Language", value="Persian (FA)")
-        
-        custom_subtitle = gr.File(label="Upload Translated SRT File")
-        translate_btn = gr.Button("Translate Subtitles")
-        translate_status = gr.Textbox(label="Status")
+    custom_subtitle = gr.File(label="Upload Translated SRT File", file_types=[".srt", ".txt", ".vtt"], file_count="single")
         
         translate_btn.click(
             process_translation, 
