@@ -307,16 +307,13 @@ def create_final_video(voice_choice, keep_original, original_volume):
 with gr.Blocks(title="Video Dubbing Tool", theme=gr.themes.Base()) as app:
     gr.Markdown("# Video Dubbing Tool")
     
-    with gr.Tab("1. Upload Video"):
-        gr.Markdown("### Upload your video or provide a YouTube URL")
-        with gr.Row():
-            video_file = gr.File(label="Upload Video File")
-            youtube_url = gr.Textbox(label="YouTube URL")
-        upload_btn = gr.Button("Process Video")
-        upload_status = gr.Textbox(label="Status")
-        
-        upload_btn.click(process_video, inputs=[video_file, youtube_url], outputs=upload_status)
-    
+    with gr.Tab("2. Extract Text"):
+        gr.Markdown("### Extract text from video audio or upload subtitle")
+        extraction_method = gr.Radio(["Whisper", "Upload Subtitle"], label="Extraction Method", value="Whisper")
+        subtitle_file = gr.File(label="Upload SRT File", file_types=[".srt", ".txt", ".vtt"], file_count="single")
+        extract_btn = gr.Button("Extract Text")
+        extract_status = gr.Textbox(label="Status")
+        extract_btn.click(extract_text, inputs=[extraction_method, subtitle_file], outputs=extract_status)
      with gr.Tab("2. Extract Text"):
         gr.Markdown("### Extract text from video audio or upload subtitle")
         extraction_method = gr.Radio(["Whisper", "Upload Subtitle"], label="Extraction Method", value="Whisper")
