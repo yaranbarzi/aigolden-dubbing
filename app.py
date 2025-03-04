@@ -67,11 +67,15 @@ def extract_text(extraction_method, subtitle_file):
         return "Text extracted using Whisper."
     
     elif extraction_method == "Upload Subtitle" and subtitle_file is not None:
-        from google.colab import files
-        uploaded = files.upload()
-        subtitle_file = next(iter(uploaded.keys()))
-        os.rename(subtitle_file, 'audio.srt')
-        return "Subtitle file uploaded and renamed successfully."
+        try:
+            # خواندن محتوای فایل آپلود شده
+            content = subtitle_file.name
+            # ذخیره با نام audio.srt
+            with open('audio.srt', 'w', encoding='utf-8') as f:
+                f.write(content)
+            return "Subtitle file uploaded and saved as audio.srt successfully!"
+        except Exception as e:
+            return f"Error processing subtitle file: {str(e)}"
     
     return "Please extract text using Whisper or upload a subtitle file."
 
@@ -92,6 +96,9 @@ def process_translation(translation_method, api_key, source_lang, target_lang, c
             return "Please provide a valid API key."
         
         try:
+            if not os.path.exists('audio.srt'):
+                return "Please extract or upload source subtitle first!"
+                
             subs = pysrt.open('audio.srt')
             for sub in subs:
                 sub.text = translate_subtitle(sub.text, api_key, source_lang, target_lang)
@@ -101,11 +108,15 @@ def process_translation(translation_method, api_key, source_lang, target_lang, c
             return f"Error: {str(e)}"
     
     elif translation_method == "Upload Translation" and custom_subtitle is not None:
-        from google.colab import files
-        uploaded = files.upload()
-        subtitle_file = next(iter(uploaded.keys()))
-        os.rename(subtitle_file, 'audio_fa.srt')
-        return "Translated subtitle uploaded and renamed successfully!"
+        try:
+            # خواندن محتوای فایل ترجمه آپلود شده
+            content = custom_subtitle.name
+            # ذخیره با نام audio_fa.srt
+            with open('audio_fa.srt', 'w', encoding='utf-8') as f:
+                f.write(content)
+            return "Translated subtitle uploaded and saved as audio_fa.srt successfully!"
+        except Exception as e:
+            return f"Error processing translated subtitle: {str(e)}"
     
     return "Please choose a translation method."
 
