@@ -143,9 +143,10 @@ def extract_text(extraction_method, subtitle_file):
         return "Text extracted using Whisper."
     
     elif extraction_method == "Upload Subtitle" and subtitle_file is not None:
-         with open('audio.srt', 'wb') as f:
-             f.write(subtitle_file.read())  # از read() استفاده میکنیم
-         return "Subtitle file uploaded successfully."    
+        with open('audio.srt', 'w', encoding='utf-8') as f:
+            f.write(subtitle_file.name)
+        return "Subtitle file uploaded successfully."
+    
     else:
         return "Please extract text using Whisper or upload a subtitle file."
 
