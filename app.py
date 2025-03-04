@@ -67,31 +67,28 @@ LANGUAGE_MAP = {
     "Arabic (AR)": "Arabic",
     "Japanese (JA)": "Japanese"
 }
+
 # Function to clean up previous files
 def cleanup_files():
     files_to_remove = ['input_video.mp4', 'audio.wav', 'audio.srt', 'audio_fa.srt', 'audio_translated.srt']
     for file in files_to_remove:
         if os.path.exists(file):
             os.remove(file)
-    
     if os.path.exists('dubbing_project'):
         import shutil
         shutil.rmtree('dubbing_project')
-    
     os.makedirs('dubbing_project/dubbed_segments', exist_ok=True)
     return "Clean up completed."
 
 # Function to handle video upload
 def process_video(video_file, youtube_url):
     cleanup_files()
-    
     if video_file is not None:
         # Process uploaded video
         with open('input_video.mp4', 'wb') as f:
             f.write(video_file)
         subprocess.run(['ffmpeg', '-i', 'input_video.mp4', '-vn', 'audio.wav'])
         return "Video uploaded and audio extracted successfully."
-    
     elif youtube_url:
         # Process YouTube video
         video_opts = {
@@ -100,7 +97,6 @@ def process_video(video_file, youtube_url):
         }
         with yt_dlp.YoutubeDL(video_opts) as ydl:
             ydl.download([youtube_url])
-        
         audio_opts = {
             'format': 'bestaudio/best',
             'postprocessors': [{
@@ -111,9 +107,7 @@ def process_video(video_file, youtube_url):
         }
         with yt_dlp.YoutubeDL(audio_opts) as ydl:
             ydl.download([youtube_url])
-        
         return "YouTube video downloaded and processed successfully."
-    
     else:
         return "Please upload a video file or provide a YouTube URL."
 
@@ -122,13 +116,19 @@ def extract_text(extraction_method, subtitle_file):
     if extraction_method == "Whisper" and os.path.exists('audio.wav'):
         subprocess.run(['whisper', 'audio.wav', '--model', 'large', '--output_dir', './', '--output_format', 'srt'])
         return "Text extracted using Whisper."
-    
     elif extraction_method == "Upload Subtitle" and subtitle_file is not None:
-        uploaded = files.upload()
-        subtitle_file = next(iter(uploaded.keys()))
-        os.rename(subtitle_file, 'audio.srt')
-        return "Subtitle file uploaded successfully."
-    
+        try:
+            # Read the content of the uploaded subtitle file
+            with open(subtitle_file.name, 'r', encoding='utf-8') as source_file:
+                subtitle_content = source_file.read()
+            
+            # Write the content to the target file
+            with open('audio.srt', 'w', encoding='utf-8') as target_file:
+                target_file.write(subtitle_content)
+            
+            return "Subtitle file uploaded successfully."
+        except Exception as e:
+            return f"Error processing subtitle file: {str(e)}"
     else:
         return "Please extract text using Whisper or upload a subtitle file."
 
@@ -136,7 +136,6 @@ def extract_text(extraction_method, subtitle_file):
 @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=4, max=10))
 def translate_subtitle(text, api_key, source_lang, target_lang):
     genai.configure(api_key=api_key)
-    
     model = genai.GenerativeModel('gemini-1.5-flash', safety_settings={
         genai.types.HarmCategory.HARM_CATEGORY_HARASSMENT: genai.types.HarmBlockThreshold.BLOCK_NONE,
         genai.types.HarmCategory.HARM_CATEGORY_HATE_SPEECH: genai.types.HarmBlockThreshold.BLOCK_NONE,
@@ -145,7 +144,6 @@ def translate_subtitle(text, api_key, source_lang, target_lang):
     })
     
     target_lang_name = LANGUAGE_MAP.get(target_lang, "English")
-    
     if target_lang == "Persian (FA)":
         prompt = f"""دستورالعمل:
         1. فقط متن را به فارسی عامیانه و لحن خودمونی ترجمه کن
@@ -170,33 +168,34 @@ def process_translation(translation_method, api_key, source_lang, target_lang, c
     if translation_method == "AI Translation":
         if not api_key:
             return "Please provide a valid API key."
-        
         try:
             subs = pysrt.open('audio.srt')
             for i, sub in enumerate(subs):
                 sub.text = translate_subtitle(sub.text, api_key, source_lang, target_lang)
-            
             subs.save('audio_translated.srt', encoding='utf-8')
             os.rename('audio_translated.srt', 'audio_fa.srt')
             return f"Translation from {source_lang} to {target_lang} completed successfully."
-        
         except Exception as e:
             return f"Error: {str(e)}"
-    
     elif translation_method == "Upload Translation" and custom_subtitle is not None:
-        from google.colab import files
-        uploaded = files.upload()
-        subtitle_file = next(iter(uploaded.keys()))
-        os.rename(subtitle_file, 'audio_fa.srt')
-        return "Translated subtitle file uploaded successfully."
-    
+        try:
+            # Read the content of the uploaded translated subtitle file
+            with open(custom_subtitle.name, 'rb') as source_file:
+                subtitle_content = source_file.read()
+            
+            # Write the content to the target file
+            with open('audio_fa.srt', 'wb') as target_file:
+                target_file.write(subtitle_content)
+            
+            return "Translated subtitle file uploaded successfully."
+        except Exception as e:
+            return f"Error processing translated subtitle file: {str(e)}"
     else:
         return "Please choose a translation method and provide required information."
 
 # Function to generate speech segments asynchronously
 async def generate_speech_segments(voice_choice):
     subs = pysrt.open('audio_fa.srt')
-    
     selected_voice = VOICE_MAP.get(voice_choice)
     if not selected_voice:
         return f"Selected voice '{voice_choice}' is not available. Please choose a valid voice."
@@ -303,57 +302,126 @@ def create_final_video(voice_choice, keep_original, original_volume):
     else:
         return None, result
 
+# Function to update visibility based on method selection
+def update_translation_visibility(method):
+    if method == "AI Translation":
+        return gr.update(visible=True), gr.update(visible=False)
+    else:
+        return gr.update(visible=False), gr.update(visible=True)
+
+def update_extraction_visibility(method):
+    if method == "Whisper":
+        return gr.update(visible=False)
+    else:
+        return gr.update(visible=True)
+
 # Gradio Interface
 with gr.Blocks(title="Video Dubbing Tool", theme=gr.themes.Base()) as app:
     gr.Markdown("# Video Dubbing Tool")
     
+    # Social Media Links
+    with gr.Row():
+        gr.HTML(
+            """
+            <div style="display: flex; justify-content: center; width: 100%; margin: 1rem 0;">
+                <a href="https://youtube.com/@aigolden" target="_blank" style="margin: 0 0.5rem;">
+                    <button style="padding: 0.75rem 1.5rem; border-radius: 0.5rem; background-color: #FF0000; color: white; border: none; cursor: pointer; font-weight: bold;">
+                        YouTube: @aigolden
+                    </button>
+                </a>
+                <a href="https://t.me/ai_golden" target="_blank" style="margin: 0 0.5rem;">
+                    <button style="padding: 0.75rem 1.5rem; border-radius: 0.5rem; background-color: #0088cc; color: white; border: none; cursor: pointer; font-weight: bold;">
+                        Telegram: @ai_golden
+                    </button>
+                </a>
+            </div>
+            """
+        )
+    
+    with gr.Tab("1. Upload Video"):
+        gr.Markdown("""
+        ### آپلود ویدیو یا ارائه لینک یوتیوب
+        **راهنما**: یک فایل ویدیویی آپلود کنید یا لینک یوتیوب را وارد کنید.
+        """)
+        with gr.Row():
+            video_file = gr.File(label="Upload Video File")
+            youtube_url = gr.Textbox(label="YouTube URL")
+        upload_btn = gr.Button("Process Video")
+        upload_status = gr.Textbox(label="Status")
+        upload_btn.click(process_video, inputs=[video_file, youtube_url], outputs=upload_status)
+    
     with gr.Tab("2. Extract Text"):
-        gr.Markdown("### Extract text from video audio or upload subtitle")
+        gr.Markdown("""
+        ### استخراج متن از صدای ویدیو یا آپلود زیرنویس
+        **راهنما**: می‌توانید از Whisper برای استخراج متن استفاده کنید یا فایل زیرنویس خود را آپلود کنید.
+        """)
         extraction_method = gr.Radio(["Whisper", "Upload Subtitle"], label="Extraction Method", value="Whisper")
-        subtitle_file = gr.File(label="Upload SRT File", file_types=[".srt", ".txt", ".vtt"], file_count="single")
+        subtitle_file = gr.File(label="Upload SRT File", visible=False)
+        extraction_method.change(update_extraction_visibility, inputs=[extraction_method], outputs=[subtitle_file])
         extract_btn = gr.Button("Extract Text")
         extract_status = gr.Textbox(label="Status")
         extract_btn.click(extract_text, inputs=[extraction_method, subtitle_file], outputs=extract_status)
-     with gr.Tab("2. Extract Text"):
-        gr.Markdown("### Extract text from video audio or upload subtitle")
-        extraction_method = gr.Radio(["Whisper", "Upload Subtitle"], label="Extraction Method", value="Whisper")
-        subtitle_file = gr.File(label="Upload SRT File", file_types=[".srt", ".txt", ".vtt"], file_count="single")
-        extract_btn = gr.Button("Extract Text")
-        extract_status = gr.Textbox(label="Status")
     
     with gr.Tab("3. Translate Subtitles"):
-    custom_subtitle = gr.File(label="Upload Translated SRT File", file_types=[".srt", ".txt", ".vtt"], file_count="single")
+        gr.Markdown("""
+        ### ترجمه زیرنویس با استفاده از هوش مصنوعی یا آپلود زیرنویس ترجمه شده
+        **راهنما**: می‌توانید از API جمینای برای ترجمه خودکار استفاده کنید یا فایل زیرنویس ترجمه شده خود را آپلود کنید.
+        """)
+        translation_method = gr.Radio(["AI Translation", "Upload Translation"], label="Translation Method", value="AI Translation")
         
+        # AI Translation Group
+        with gr.Group(visible=True) as ai_translation_group:
+            api_key = gr.Textbox(label="Google API Key", type="password")
+            source_lang = gr.Dropdown(list(LANGUAGE_MAP.keys()), label="Source Language", value="English (EN)")
+            target_lang = gr.Dropdown(list(LANGUAGE_MAP.keys()), label="Target Language", value="Persian (FA)")
+        
+        # Upload Translation Group
+        custom_subtitle = gr.File(label="Upload Translated SRT File", visible=False)
+        
+        # Update visibility based on method
+        translation_method.change(
+            update_translation_visibility,
+            inputs=[translation_method],
+            outputs=[ai_translation_group, custom_subtitle]
+        )
+        
+        translate_btn = gr.Button("Translate Subtitles")
+        translate_status = gr.Textbox(label="Status")
         translate_btn.click(
-            process_translation, 
-            inputs=[translation_method, api_key, source_lang, target_lang, custom_subtitle], 
+            process_translation,
+            inputs=[translation_method, api_key, source_lang, target_lang, custom_subtitle],
             outputs=translate_status
         )
     
     with gr.Tab("4. Generate Speech"):
-        gr.Markdown("### Generate speech segments with timing")
+        gr.Markdown("""
+        ### تولید قطعات صوتی با زمان‌بندی دقیق
+        **راهنما**: صدای مورد نظر خود را برای دوبله انتخاب کنید.
+        """)
         voice_choice = gr.Dropdown(list(VOICE_MAP.keys()), label="Voice", value="فرید (FA)")
         generate_btn = gr.Button("Generate Speech Segments")
         generate_status = gr.Textbox(label="Status")
-        
         generate_btn.click(handle_generate_speech, inputs=[voice_choice], outputs=generate_status)
     
     with gr.Tab("5. Create Final Video"):
-        gr.Markdown("### Combine video with synthesized speech")
+        gr.Markdown("""
+        ### ترکیب ویدیو با صدای تولید شده
+        **راهنما**: می‌توانید صدای اصلی را با حجم کم نگه دارید یا کاملاً حذف کنید.
+        """)
         keep_original = gr.Checkbox(label="Keep Original Audio", value=False)
         original_volume = gr.Slider(minimum=0, maximum=1, value=0.05, step=0.005, label="Original Audio Volume")
         final_voice_choice = gr.Dropdown(list(VOICE_MAP.keys()), label="Voice", value="فرید (FA)")
         create_btn = gr.Button("Create Final Video")
-        
         with gr.Row():
             final_video = gr.Video(label="Final Video")
             final_status = gr.Textbox(label="Status")
-        
         create_btn.click(
-            create_final_video, 
-            inputs=[final_voice_choice, keep_original, original_volume], 
+            create_final_video,
+            inputs=[final_voice_choice, keep_original, original_volume],
             outputs=[final_video, final_status]
         )
+    
+
     
     with gr.Tab("Cleanup"):
         gr.Markdown("### Clean up files from previous sessions")
