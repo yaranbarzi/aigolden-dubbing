@@ -68,11 +68,10 @@ def extract_text(extraction_method, subtitle_file):
     
     elif extraction_method == "Upload Subtitle" and subtitle_file is not None:
         try:
-            # خواندن محتوای فایل آپلود شده
-            content = subtitle_file.name
-            # ذخیره با نام audio.srt
-            with open('audio.srt', 'w', encoding='utf-8') as f:
-                f.write(content)
+            temp_file = subtitle_file.name
+            # کپی فایل با نام جدید
+            import shutil
+            shutil.copy(temp_file, 'audio.srt')
             return "Subtitle file uploaded and saved as audio.srt successfully!"
         except Exception as e:
             return f"Error processing subtitle file: {str(e)}"
@@ -98,22 +97,33 @@ def process_translation(translation_method, api_key, source_lang, target_lang, c
         try:
             if not os.path.exists('audio.srt'):
                 return "Please extract or upload source subtitle first!"
-                
-            subs = pysrt.open('audio.srt')
+            
+            # خواندن محتوای واقعی فایل
+            subs = pysrt.open('audio.srt', encoding='utf-8')
+            translated_subs = pysrt.SubRipFile()
+            
             for sub in subs:
-                sub.text = translate_subtitle(sub.text, api_key, source_lang, target_lang)
-            subs.save('audio_fa.srt', encoding='utf-8')
+                translated_text = translate_subtitle(sub.text, api_key, source_lang, target_lang)
+                translated_sub = pysrt.SubRipItem(
+                    index=sub.index,
+                    start=sub.start,
+                    end=sub.end,
+                    text=translated_text
+                )
+                translated_subs.append(translated_sub)
+            
+            translated_subs.save('audio_fa.srt', encoding='utf-8')
             return f"Translation from {source_lang} to {target_lang} completed!"
+            
         except Exception as e:
-            return f"Error: {str(e)}"
+            return f"Error in translation: {str(e)}"
     
     elif translation_method == "Upload Translation" and custom_subtitle is not None:
         try:
-            # خواندن محتوای فایل ترجمه آپلود شده
-            content = custom_subtitle.name
-            # ذخیره با نام audio_fa.srt
-            with open('audio_fa.srt', 'w', encoding='utf-8') as f:
-                f.write(content)
+            temp_file = custom_subtitle.name
+            # کپی فایل با نام جدید
+            import shutil
+            shutil.copy(temp_file, 'audio_fa.srt')
             return "Translated subtitle uploaded and saved as audio_fa.srt successfully!"
         except Exception as e:
             return f"Error processing translated subtitle: {str(e)}"
