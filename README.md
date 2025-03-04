@@ -70,3 +70,14 @@ python app.py
 - کره‌ای (KO)
 - روسی (RU)
 - اسپانیایی (ES)
+## اجرا در Google Colab
+
+[![Open In Colab - UI Version](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/yaranbarzi/aigolden-dubbing/blob/main/aigolden_2025Dub_UI.ipynb)
+
+[![Open In Colab - NO UI Version](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/yaranbarzi/aigolden-dubbing/blob/main/aigolden_2025Dub_NOUI.ipynb)
+
+## آموزش تصویری
+
+[![YouTube Channel](https://img.shields.io/badge/YouTube-aigolden-red?style=for-the-badge&logo=youtube)](https://www.youtube.com/@aigolden)
+
+برای دیدن آموزش کامل کار با ابزار، ما را در یوتیوب دنبال کنید!
