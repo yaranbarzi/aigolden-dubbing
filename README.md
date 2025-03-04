@@ -80,6 +80,6 @@ python app.py
 
 ## آموزش تصویری
 
+برای دیدن آموزش کامل کار با ابزار، ما را در یوتیوب دنبال کنید!
 [![YouTube Channel](https://img.shields.io/badge/YouTube-aigolden-red?style=for-the-badge&logo=youtube)](https://www.youtube.com/@aigolden)
 
-برای دیدن آموزش کامل کار با ابزار، ما را در یوتیوب دنبال کنید!
