@@ -1,11 +1,3 @@
-"""
-AI Dubbing Tool
-Created by aigolden
-
-Follow us:
-YouTube: https://youtube.com/@aigolden
-Telegram: @ai_golden
-"""
 import os
 import base64
 import subprocess
@@ -214,22 +206,22 @@ async def generate_speech_segments(voice_choice):
         return f"Selected voice '{voice_choice}' is not available. Please choose a valid voice."
     
     for i, sub in enumerate(subs):
-        # Calculate exact duration
-        start_time = sub.start.seconds + sub.start.milliseconds/1000
-        end_time = sub.end.seconds + sub.end.milliseconds/1000
+        # محاسبه مدت زمان هدف
+        start_time = sub.start.seconds + sub.start.milliseconds / 1000
+        end_time = sub.end.seconds + sub.end.milliseconds / 1000
         target_duration = end_time - start_time
         
-        # Generate speech with Edge TTS
+        # تولید صدا با Edge TTS
         communicate = edge_tts.Communicate(sub.text, selected_voice)
         await communicate.save(f"dubbing_project/dubbed_segments/temp_{i+1}.mp3")
         
-        # Convert to WAV format
+        # تبدیل به فرمت WAV
         subprocess.run([
             'ffmpeg', '-i', f"dubbing_project/dubbed_segments/temp_{i+1}.mp3",
             '-y', f"dubbing_project/dubbed_segments/temp_wav_{i+1}.wav"
         ])
         
-        # Calculate original speech duration
+        # محاسبه مدت زمان اصلی صدا
         result = subprocess.run([
             'ffprobe', '-v', 'error', '-show_entries', 'format=duration',
             '-of', 'default=noprint_wrappers=1:nokey=1',
@@ -238,17 +230,25 @@ async def generate_speech_segments(voice_choice):
         
         original_duration = float(result.stdout.strip())
         
-        # Calculate speed factor to match target duration
+        # محاسبه ضریب سرعت
+        if target_duration <= 0:  # جلوگیری از تقسیم بر صفر
+            target_duration = 0.1  # حداقل مقدار معقول
         speed_factor = original_duration / target_duration
         
-        # Adjust duration using rubberband
+        # محدود کردن speed_factor به محدوده مجاز rubberband
+        if speed_factor < 0.01:  # اگر خیلی کند باشه
+            speed_factor = 0.01  # حداقل سرعت مجاز
+        elif speed_factor > 100:  # اگر خیلی تند باشه
+            speed_factor = 100  # حداکثر سرعت مجاز
+        
+        # تنظیم مدت زمان با rubberband
         subprocess.run([
             'ffmpeg', '-i', f"dubbing_project/dubbed_segments/temp_wav_{i+1}.wav",
             '-filter:a', f'rubberband=tempo={speed_factor}',
             '-y', f"dubbing_project/dubbed_segments/dub_{i+1}.wav"
         ])
         
-        # Clean up temporary files
+        # پاکسازی فایل‌های موقت
         if os.path.exists(f"dubbing_project/dubbed_segments/temp_{i+1}.mp3"):
             os.remove(f"dubbing_project/dubbed_segments/temp_{i+1}.mp3")
         if os.path.exists(f"dubbing_project/dubbed_segments/temp_wav_{i+1}.wav"):
