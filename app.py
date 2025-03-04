@@ -317,12 +317,12 @@ with gr.Blocks(title="Video Dubbing Tool", theme=gr.themes.Base()) as app:
         
         upload_btn.click(process_video, inputs=[video_file, youtube_url], outputs=upload_status)
     
-    with gr.Tab("2. Extract Text"):
-    gr.Markdown("### Extract text from video audio or upload subtitle")
-    extraction_method = gr.Radio(["Whisper", "Upload Subtitle"], label="Extraction Method", value="Whisper")
-    subtitle_file = gr.File(label="Upload SRT File", file_types=[".srt", ".txt", ".vtt"], file_count="single")
-    extract_btn = gr.Button("Extract Text")
-    extract_status = gr.Textbox(label="Status")
+     with gr.Tab("2. Extract Text"):
+        gr.Markdown("### Extract text from video audio or upload subtitle")
+        extraction_method = gr.Radio(["Whisper", "Upload Subtitle"], label="Extraction Method", value="Whisper")
+        subtitle_file = gr.File(label="Upload SRT File", file_types=[".srt", ".txt", ".vtt"], file_count="single")
+        extract_btn = gr.Button("Extract Text")
+        extract_status = gr.Textbox(label="Status")
     
     with gr.Tab("3. Translate Subtitles"):
     custom_subtitle = gr.File(label="Upload Translated SRT File", file_types=[".srt", ".txt", ".vtt"], file_count="single")
