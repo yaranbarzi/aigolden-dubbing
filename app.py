@@ -67,11 +67,14 @@ def extract_text(extraction_method, subtitle_file):
         return "Text extracted using Whisper."
     
     elif extraction_method == "Upload Subtitle" and subtitle_file is not None:
-        with open('audio.srt', 'wb') as f:
-            f.write(subtitle_file.read())
-        return "Subtitle file uploaded successfully."
+        from google.colab import files
+        uploaded = files.upload()
+        subtitle_file = next(iter(uploaded.keys()))
+        os.rename(subtitle_file, 'audio.srt')
+        return "Subtitle file uploaded and renamed successfully."
     
     return "Please extract text using Whisper or upload a subtitle file."
+
 
 def translate_subtitle(text, api_key, source_lang, target_lang):
     """ترجمه متن با API گوگل"""
@@ -98,9 +101,11 @@ def process_translation(translation_method, api_key, source_lang, target_lang, c
             return f"Error: {str(e)}"
     
     elif translation_method == "Upload Translation" and custom_subtitle is not None:
-        with open('audio_fa.srt', 'wb') as f:
-            f.write(custom_subtitle.read())
-        return "Translated subtitle uploaded successfully!"
+        from google.colab import files
+        uploaded = files.upload()
+        subtitle_file = next(iter(uploaded.keys()))
+        os.rename(subtitle_file, 'audio_fa.srt')
+        return "Translated subtitle uploaded and renamed successfully!"
     
     return "Please choose a translation method."
 
