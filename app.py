@@ -7,7 +7,14 @@ from google.colab import files
 import edge_tts
 import asyncio
 from pydub import AudioSegment
-
+from tenacity import retry, stop_after_attempt, wait_exponential
+import time
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=4, max=10))
+def translate_subtitle(text, api_key, source_lang, target_lang):
+    genai.configure(api_key=api_key)
+    model = genai.GenerativeModel('gemini-1.5-flash')
+    response = model.generate_content(text)
+    return response.text
 # تنظیمات زبان‌ها
 LANGUAGE_MAP = {
     "Persian (FA)": "فارسی",
@@ -89,7 +96,6 @@ def translate_subtitle(text, api_key, source_lang, target_lang):
     return response.text
 
 def process_translation(translation_method, api_key, source_lang, target_lang, custom_subtitle):
-    """پردازش ترجمه با هوش مصنوعی یا آپلود ترجمه"""
     if translation_method == "AI Translation":
         if not api_key:
             return "Please provide a valid API key."
@@ -98,7 +104,6 @@ def process_translation(translation_method, api_key, source_lang, target_lang, c
             if not os.path.exists('audio.srt'):
                 return "Please extract or upload source subtitle first!"
             
-            # خواندن محتوای واقعی فایل
             subs = pysrt.open('audio.srt', encoding='utf-8')
             translated_subs = pysrt.SubRipFile()
             
@@ -111,6 +116,7 @@ def process_translation(translation_method, api_key, source_lang, target_lang, c
                     text=translated_text
                 )
                 translated_subs.append(translated_sub)
+                time.sleep(2)  # Add delay between requests
             
             translated_subs.save('audio_fa.srt', encoding='utf-8')
             return f"Translation from {source_lang} to {target_lang} completed!"
@@ -121,7 +127,6 @@ def process_translation(translation_method, api_key, source_lang, target_lang, c
     elif translation_method == "Upload Translation" and custom_subtitle is not None:
         try:
             temp_file = custom_subtitle.name
-            # کپی فایل با نام جدید
             import shutil
             shutil.copy(temp_file, 'audio_fa.srt')
             return "Translated subtitle uploaded and saved as audio_fa.srt successfully!"
