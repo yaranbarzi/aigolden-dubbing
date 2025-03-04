@@ -1,23 +1,3 @@
-with gr.Blocks(title="Video Dubbing Tool", theme=gr.themes.Base()) as app:
-    gr.Markdown("# Video Dubbing Tool")
-    
-    with gr.Row():
-        gr.HTML(
-            """
-            <div style="text-align: center; margin-bottom: 1rem">
-                <a href="https://youtube.com/@aigolden" target="_blank">
-                    <button style="padding: 0.5rem 1rem; margin: 0 0.5rem; border-radius: 0.5rem; background-color: #FF0000; color: white; border: none; cursor: pointer;">
-                        YouTube: @aigolden
-                    </button>
-                </a>
-                <a href="https://t.me/ai_golden" target="_blank">
-                    <button style="padding: 0.5rem 1rem; margin: 0 0.5rem; border-radius: 0.5rem; background-color: #0088cc; color: white; border: none; cursor: pointer;">
-                        Telegram: @ai_golden
-                    </button>
-                </a>
-            </div>
-            """
-        )
 import os
 import base64
 import subprocess
@@ -87,7 +67,25 @@ LANGUAGE_MAP = {
     "Arabic (AR)": "Arabic",
     "Japanese (JA)": "Japanese"
 }
-
+with gr.Blocks(title="Video Dubbing Tool", theme=gr.themes.Base()) as app:
+    gr.Markdown("# Video Dubbing Tool")
+    with gr.Row():
+        gr.HTML(
+            """
+            <div style="text-align: center; margin-bottom: 1rem">
+                <a href="https://youtube.com/@aigolden" target="_blank">
+                    <button style="padding: 0.5rem 1rem; margin: 0 0.5rem; border-radius: 0.5rem; background-color: #FF0000; color: white; border: none; cursor: pointer;">
+                        YouTube: @aigolden
+                    </button>
+                </a>
+                <a href="https://t.me/ai_golden" target="_blank">
+                    <button style="padding: 0.5rem 1rem; margin: 0 0.5rem; border-radius: 0.5rem; background-color: #0088cc; color: white; border: none; cursor: pointer;">
+                        Telegram: @ai_golden
+                    </button>
+                </a>
+            </div>
+            """
+        )
 # Function to clean up previous files
 def cleanup_files():
     files_to_remove = ['input_video.mp4', 'audio.wav', 'audio.srt', 'audio_fa.srt', 'audio_translated.srt']
