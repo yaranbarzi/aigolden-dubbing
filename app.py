@@ -117,16 +117,15 @@ def extract_text(extraction_method, subtitle_file):
         subprocess.run(['whisper', 'audio.wav', '--model', 'large', '--output_dir', './', '--output_format', 'srt'])
         return "Text extracted using Whisper."
     elif extraction_method == "Upload Subtitle" and subtitle_file is not None:
-        try:
-            # Read the content of the uploaded subtitle file
-            with open(subtitle_file.name, 'r', encoding='utf-8') as source_file:
-                subtitle_content = source_file.read()
-            
-            # Write the content to the target file
-            with open('audio.srt', 'w', encoding='utf-8') as target_file:
-                target_file.write(subtitle_content)
-            
-            return "Subtitle file uploaded successfully."
+    # خواندن محتوای فایل به جای نام فایل
+    with open(subtitle_file.name, 'r', encoding='utf-8') as source_file:
+        subtitle_content = source_file.read()
+    
+    with open('audio.srt', 'w', encoding='utf-8') as target_file:
+        target_file.write(subtitle_content)
+    
+    return "Subtitle file uploaded successfully."
+
         except Exception as e:
             return f"Error processing subtitle file: {str(e)}"
     else:
@@ -178,16 +177,15 @@ def process_translation(translation_method, api_key, source_lang, target_lang, c
         except Exception as e:
             return f"Error: {str(e)}"
     elif translation_method == "Upload Translation" and custom_subtitle is not None:
-        try:
-            # Read the content of the uploaded translated subtitle file
-            with open(custom_subtitle.name, 'rb') as source_file:
-                subtitle_content = source_file.read()
-            
-            # Write the content to the target file
-            with open('audio_fa.srt', 'wb') as target_file:
-                target_file.write(subtitle_content)
-            
-            return "Translated subtitle file uploaded successfully."
+    # خواندن محتوای فایل به جای نام فایل
+    with open(custom_subtitle.name, 'rb') as source_file:
+        subtitle_content = source_file.read()
+    
+    with open('audio_fa.srt', 'wb') as target_file:
+        target_file.write(subtitle_content)
+    
+    return "Translated subtitle file uploaded successfully."
+
         except Exception as e:
             return f"Error processing translated subtitle file: {str(e)}"
     else:
