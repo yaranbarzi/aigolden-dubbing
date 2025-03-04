@@ -1,3 +1,11 @@
+"""
+AI Dubbing Tool
+Created by aigolden
+
+Follow us:
+YouTube: https://youtube.com/@aigolden
+Telegram: @ai_golden
+"""
 import os
 import base64
 import subprocess
