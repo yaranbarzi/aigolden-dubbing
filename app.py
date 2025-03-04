@@ -12,11 +12,31 @@ import time
 @retry(stop=stop_after_attempt(5), wait=wait_exponential(multiplier=2, min=10, max=30))
 def translate_subtitle(text, api_key, source_lang, target_lang):
     genai.configure(api_key=api_key)
-    model = genai.GenerativeModel('gemini-1.5-flash')
-    prompt = f"Translate this text from {source_lang} to {target_lang}: {text}"
+    model = genai.GenerativeModel('gemini-1.5-flash', safety_settings={
+        genai.types.HarmCategory.HARM_CATEGORY_HARASSMENT: genai.types.HarmBlockThreshold.BLOCK_NONE,
+        genai.types.HarmCategory.HARM_CATEGORY_HATE_SPEECH: genai.types.HarmBlockThreshold.BLOCK_NONE,
+        genai.types.HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: genai.types.HarmBlockThreshold.BLOCK_NONE,
+        genai.types.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: genai.types.HarmBlockThreshold.BLOCK_NONE,
+    })
+
+    if target_lang == "Persian (FA)":
+        prompt = f"""دستورالعمل:
+        1. فقط متن را به فارسی عامیانه و لحن خودمونی ترجمه کن
+        2. هرجا لازمه از نقطه و کاما و علائم نگارشی استفاده کن
+        3. اضافه گویی در ترجمه ممنوع
+        متن برای ترجمه:
+        {text}"""
+    else:
+        prompt = f"""Instruction:
+        1. Please translate the text to {target_lang} with the same tone
+        2. Use appropriate punctuation where necessary
+        3. No additional explanation or text
+        Text to translate:
+        {text}"""
+
     response = model.generate_content(prompt)
-    time.sleep(3)  # افزایش تاخیر بین درخواست‌ها
-    return response.text
+    time.sleep(3)
+    return response.text.strip()
 # تنظیمات زبان‌ها
 LANGUAGE_MAP = {
     "Persian (FA)": "فارسی",
