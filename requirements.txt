@@ -1,0 +1,9 @@
+edge-tts
+yt-dlp
+pysrt
+rubberband-cli
+pydub
+gradio
+google-generativeai
+openai-whisper
+git+https://github.com/yaranbarzi/aigolden-audio-to-text.git
