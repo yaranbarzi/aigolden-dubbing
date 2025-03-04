@@ -1,3 +1,22 @@
+with gr.Blocks(title="Video Dubbing Tool", theme=gr.themes.Base()) as app:
+    gr.Markdown("# Video Dubbing Tool")
+    gr.HTML(
+        """
+        <div style="text-align: center; margin-bottom: 1rem">
+            <a href="https://youtube.com/@aigolden" target="_blank">
+                <button style="padding: 0.5rem 1rem; margin: 0 0.5rem; border-radius: 0.5rem; background-color: #FF0000; color: white; border: none; cursor: pointer;">
+                    YouTube: @aigolden
+                </button>
+            </a>
+            <a href="https://t.me/ai_golden" target="_blank">
+                <button style="padding: 0.5rem 1rem; margin: 0 0.5rem; border-radius: 0.5rem; background-color: #0088cc; color: white; border: none; cursor: pointer;">
+                    Telegram: @ai_golden
+                </button>
+            </a>
+        </div>
+        """
+    )
+    # بقیه کدها مثل قبل
 import os
 import base64
 import subprocess
@@ -67,25 +86,7 @@ LANGUAGE_MAP = {
     "Arabic (AR)": "Arabic",
     "Japanese (JA)": "Japanese"
 }
-with gr.Blocks(title="Video Dubbing Tool", theme=gr.themes.Base()) as app:
-    gr.Markdown("# Video Dubbing Tool")
-    with gr.Row():
-        gr.HTML(
-            """
-            <div style="text-align: center; margin-bottom: 1rem">
-                <a href="https://youtube.com/@aigolden" target="_blank">
-                    <button style="padding: 0.5rem 1rem; margin: 0 0.5rem; border-radius: 0.5rem; background-color: #FF0000; color: white; border: none; cursor: pointer;">
-                        YouTube: @aigolden
-                    </button>
-                </a>
-                <a href="https://t.me/ai_golden" target="_blank">
-                    <button style="padding: 0.5rem 1rem; margin: 0 0.5rem; border-radius: 0.5rem; background-color: #0088cc; color: white; border: none; cursor: pointer;">
-                        Telegram: @ai_golden
-                    </button>
-                </a>
-            </div>
-            """
-        )
+
 # Function to clean up previous files
 def cleanup_files():
     files_to_remove = ['input_video.mp4', 'audio.wav', 'audio.srt', 'audio_fa.srt', 'audio_translated.srt']
@@ -143,9 +144,12 @@ def extract_text(extraction_method, subtitle_file):
         return "Text extracted using Whisper."
     
     elif extraction_method == "Upload Subtitle" and subtitle_file is not None:
+        # خواندن محتوای فایل آپلودشده و ذخیره در audio.srt
+        with open(subtitle_file.name, 'r', encoding='utf-8') as f:
+            subtitle_content = f.read()
         with open('audio.srt', 'w', encoding='utf-8') as f:
-            f.write(subtitle_file.name)
-        return "Subtitle file uploaded successfully."
+            f.write(subtitle_content)
+        return "Subtitle file uploaded and processed successfully."
     
     else:
         return "Please extract text using Whisper or upload a subtitle file."
@@ -202,9 +206,12 @@ def process_translation(translation_method, api_key, source_lang, target_lang, c
             return f"Error: {str(e)}"
     
     elif translation_method == "Upload Translation" and custom_subtitle is not None:
-        with open('audio_fa.srt', 'wb') as f:
-            f.write(custom_subtitle)
-        return "Translated subtitle file uploaded successfully."
+        # خواندن محتوای فایل ترجمه‌شده و ذخیره در audio_fa.srt
+        with open(custom_subtitle.name, 'r', encoding='utf-8') as f:
+            translated_content = f.read()
+        with open('audio_fa.srt', 'w', encoding='utf-8') as f:
+            f.write(translated_content)
+        return "Translated subtitle file uploaded and processed successfully."
     
     else:
         return "Please choose a translation method and provide required information."
@@ -265,24 +272,59 @@ def sync_segments(voice_choice, keep_original, original_volume):
     if not os.path.exists('input_video.mp4'):
         return "Please upload or download a video first."
     
-    # Read and process subtitle file
+    if not os.path.exists('audio_fa.srt'):
+        return "Please process or upload translated subtitles first."
+    
+    # خواندن زیرنویس
     subs = pysrt.open('audio_fa.srt')
     
-    # Set up complex filter for audio mixing
+    # بررسی وجود فایل‌های صوتی
+    valid_segments = []
+    for i in range(len(subs)):
+        if os.path.exists(f"dubbing_project/dubbed_segments/dub_{i+1}.wav"):
+            valid_segments.append(i)
+    
+    if not valid_segments:
+        return "No speech segments found. Please generate speech first."
+    
+    # تنظیم فیلتر پیچیده برای ترکیب صدا
     if keep_original:
         filter_complex = f"[0:a]volume={original_volume}[original_audio];"
     else:
         filter_complex = "[0:a]volume=0[original_audio];"
     
-    # Add each segment with precise timing
-    valid_segments = []
-    for i, sub in enumerate(subs):
-        try:
-            start_time_ms = (sub.start.hours * 3600 + sub.start.minutes * 60 + sub.start.seconds) * 1000 + sub.start.milliseconds
-            filter_complex += f"[{i+1}:a]adelay={start_time_ms}|{start_time_ms}[a{i+1}];"
-            valid_segments.append(i)
-        except Exception as e:
-            continue
+    # اضافه کردن هر سگمنت با زمان‌بندی دقیق
+    for i in valid_segments:
+        sub = subs[i]
+        start_time_ms = (sub.start.hours * 3600 + sub.start.minutes * 60 + sub.start.seconds) * 1000 + sub.start.milliseconds
+        filter_complex += f"[{i+1}:a]adelay={start_time_ms}|{start_time_ms}[a{i+1}];"
+    
+    # ترکیب سگمنت‌ها
+    merge_command = "[original_audio]"
+    for i in valid_segments:
+        merge_command += f"[a{i+1}]"
+    merge_command += f"amix=inputs={len(valid_segments) + 1}:normalize=0[aout]"
+    filter_complex += merge_command
+    
+    # ساخت دستور ffmpeg
+    input_files = " ".join([f"-i dubbing_project/dubbed_segments/dub_{i+1}.wav" for i in valid_segments])
+    voice_code = voice_choice.split("(")[1].split(")")[0] if "(" in voice_choice else "FA"
+    output_filename = f'final_dubbed_video_{voice_code}.mp4'
+    
+    # اجرای دستور ffmpeg
+    command = [
+        'ffmpeg', '-y', '-i', 'input_video.mp4',
+        *input_files.split(),
+        '-filter_complex', filter_complex,
+        '-map', '0:v', '-map', '[aout]',
+        '-c:v', 'copy', output_filename
+    ]
+    result = subprocess.run(command, capture_output=True, text=True)
+    
+    if os.path.exists(output_filename):
+        return output_filename
+    else:
+        return f"Error creating final video: {result.stderr}"
     
     # Combine valid segments
     merge_command = "[original_audio]"
