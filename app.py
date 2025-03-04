@@ -9,11 +9,13 @@ import asyncio
 from pydub import AudioSegment
 from tenacity import retry, stop_after_attempt, wait_exponential
 import time
-@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=4, max=10))
+@retry(stop=stop_after_attempt(5), wait=wait_exponential(multiplier=2, min=10, max=30))
 def translate_subtitle(text, api_key, source_lang, target_lang):
     genai.configure(api_key=api_key)
     model = genai.GenerativeModel('gemini-1.5-flash')
-    response = model.generate_content(text)
+    prompt = f"Translate this text from {source_lang} to {target_lang}: {text}"
+    response = model.generate_content(prompt)
+    time.sleep(3)  # افزایش تاخیر بین درخواست‌ها
     return response.text
 # تنظیمات زبان‌ها
 LANGUAGE_MAP = {
