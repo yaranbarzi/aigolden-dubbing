@@ -20,7 +20,7 @@
 
 
 **نسخه بدون رابط کاربری (NO UI Version)**  
-[![Open In Colab - NO UI Version](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/yaranbarzi/aigolden-dubbing/blob/main/aigolden_2025Dub_NOUI.ipynb)
+[![Open In Colab - NO UI Version](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/yaranbarzi/aigolden-dubbing/blob/main/aigolden_2025.07Dub_NOUI.ipynb)
 
 ## آموزش تصویری
 
