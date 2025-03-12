@@ -18,7 +18,6 @@
 - اسپانیایی (ES)
 ## اجرا در Google Colab
 
-Sonitranslate_12_03_2025EN.ipynb
 **نسخه بدون رابط کاربری (NO UI Version)**  
 [![Open In Colab - NO UI Version](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/yaranbarzi/aigolden-dubbing/blob/main/aigolden_2025_08Dub_NOUI.ipynb)
 
