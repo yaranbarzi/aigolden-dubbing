@@ -28,6 +28,8 @@
 **نسخه FA Sonitranslate
 [![Open In Colab - NO UI Version](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/yaranbarzi/aigolden-dubbing/blob/main/Sonitranslate_12_03_2025FA.ipynb)
 
+**نسخه openai در حال تست اولیه 
+[![Open In Colab - NO UI Version](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/yaranbarzi/aigolden-dubbing/blob/main/Sonitranslate_12_03_2025FA.ipynb)
 ## آموزش تصویری
 
 برای دیدن آموزش کامل کار با ابزار، ما را در یوتیوب دنبال کنید!
