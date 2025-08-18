@@ -18,6 +18,8 @@
 - اسپانیایی (ES)
 - هندی (HI)
 ## اجرا در Google Colab
+**دوبله شورت ویدیو**  
+[![Open In Colab - NO UI Version](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/yaranbarzi/aigolden-dubbing/blob/main/aigolden_Short_Dub.ipynb)
 
 **نسخه بدون رابط کاربری (NO UI Version)**  
 [![Open In Colab - NO UI Version](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/yaranbarzi/aigolden-dubbing/blob/main/aigolden2025_03_31Dubbing.ipynb)
