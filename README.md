@@ -5,23 +5,32 @@
 
 ---
 
+## 🌟 نوتبوک‌های جدید (2025)  
+
+| نسخه | توضیحات | لینک اجرا |
+|------|---------|-----------|
+| 🎞️ دوبله شورت ویدیو | برای ویدیوهای کوتاه | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/yaranbarzi/aigolden-dubbing/blob/main/aigolden_Short_Dub.ipynb) |
+| 🌎 Sonitranslate EN (2025) | نسخه انگلیسی جدید | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/yaranbarzi/aigolden-dubbing/blob/main/SoniTranslate_2025_08_26EN.ipynb) |
+| 🇮🇷 Sonitranslate FA (2025) | نسخه فارسی جدید | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/yaranbarzi/aigolden-dubbing/blob/main/SoniTranslate_2025_08_26FA.ipynb) |
+
+---
+
+## 📂 نسخه‌های قبلی  
+
+| نسخه | توضیحات | لینک اجرا |
+|------|---------|-----------|
+| ⚡ بدون رابط کاربری | مناسب برای افراد حرفه‌ای | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/yaranbarzi/aigolden-dubbing/blob/main/aigolden2025_03_31Dubbing.ipynb) |
+| 🌎 Sonitranslate EN (قدیمی) | نسخه انگلیسی قبلی | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/yaranbarzi/aigolden-dubbing/blob/main/Sonitranslate_12_03_2025EN.ipynb) |
+| 🇮🇷 Sonitranslate FA (قدیمی) | نسخه فارسی قبلی | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/yaranbarzi/aigolden-dubbing/blob/main/Sonitranslate_12_03_2025FA.ipynb) |
+| 🧪 OpenAI Version | نسخه آزمایشی | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/yaranbarzi/aigolden-dubbing/blob/main/Sonitranslate_openai.ipynb) |
+
+---
+
 ## 🌐 پشتیبانی از زبان‌ها  
 ✅ فارسی (FA) | ✅ انگلیسی (EN) | ✅ عربی (AR)  
 ✅ چینی (ZH) | ✅ فرانسوی (FR) | ✅ آلمانی (DE)  
 ✅ ایتالیایی (IT) | ✅ ژاپنی (JA) | ✅ کره‌ای (KO)  
 ✅ روسی (RU) | ✅ اسپانیایی (ES) | ✅ هندی (HI)  
-
----
-
-## 🚀 اجرا در Google Colab  
-
-| نسخه | توضیحات | لینک اجرا |
-|------|---------|-----------|
-| 🎞️ دوبله شورت ویدیو | برای ویدیوهای کوتاه | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/yaranbarzi/aigolden-dubbing/blob/main/aigolden_Short_Dub.ipynb) |
-| ⚡ نسخه بدون رابط کاربری | مناسب برای افراد حرفه‌ای | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/yaranbarzi/aigolden-dubbing/blob/main/aigolden2025_03_31Dubbing.ipynb) |
-| 🌎 Sonitranslate EN | نسخه انگلیسی | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/yaranbarzi/aigolden-dubbing/blob/main/Sonitranslate_12_03_2025EN.ipynb) |
-| 🇮🇷 Sonitranslate FA | نسخه فارسی | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/yaranbarzi/aigolden-dubbing/blob/main/Sonitranslate_12_03_2025FA.ipynb) |
-| 🧪 OpenAI Version | نسخه آزمایشی | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/yaranbarzi/aigolden-dubbing/blob/main/Sonitranslate_openai.ipynb) |
 
 ---
 
@@ -31,5 +40,4 @@
 [![YouTube Channel](https://img.shields.io/badge/YouTube-aigolden-red?style=for-the-badge&logo=youtube)](https://www.youtube.com/@aigolden)
 
 ---
-
 
