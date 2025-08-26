@@ -19,7 +19,7 @@
 
 | نسخه | توضیحات | لینک اجرا |
 |------|---------|-----------|
-| ⚡ بدون رابط کاربری | مناسب برای افراد حرفه‌ای | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/yaranbarzi/aigolden-dubbing/blob/main/aigolden2025_03_31Dubbing.ipynb) |
+| ⚡ بدون رابط کاربری | ترجمه توسط api  | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/yaranbarzi/aigolden-dubbing/blob/main/aigolden2025_03_31Dubbing.ipynb) |
 | 🌎 Sonitranslate EN (قدیمی) | نسخه انگلیسی قبلی | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/yaranbarzi/aigolden-dubbing/blob/main/Sonitranslate_12_03_2025EN.ipynb) |
 | 🇮🇷 Sonitranslate FA (قدیمی) | نسخه فارسی قبلی | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/yaranbarzi/aigolden-dubbing/blob/main/Sonitranslate_12_03_2025FA.ipynb) |
 | 🧪 OpenAI Version | نسخه آزمایشی | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/yaranbarzi/aigolden-dubbing/blob/main/Sonitranslate_openai.ipynb) |
