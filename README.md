@@ -10,6 +10,7 @@
 | نسخه | توضیحات | لینک اجرا |
 |------|---------|-----------|
 | 🎞️ دوبله شورت ویدیو | برای ویدیوهای کوتاه | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/yaranbarzi/aigolden-dubbing/blob/main/aigolden_Short_Dub.ipynb) |
+| 🎬 دوبله ویدیو | برای ویدیوهای معمولی | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/yaranbarzi/aigolden-dubbing/blob/main/aigolden_2025_08Dub_NOUI.ipynb) |
 | 🌎 Sonitranslate EN (2025) | نسخه انگلیسی جدید | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/yaranbarzi/aigolden-dubbing/blob/main/SoniTranslate_2025_08_26EN.ipynb) |
 | 🇮🇷 Sonitranslate FA (2025) | نسخه فارسی جدید | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/yaranbarzi/aigolden-dubbing/blob/main/SoniTranslate_2025_08_26FA.ipynb) |
 
